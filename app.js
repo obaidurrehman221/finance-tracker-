@@ -334,7 +334,7 @@ function renderPartners() {
   const totalExpense = state.transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const totalContrib = state.contributions.reduce((s,c)=>s+c.amount,0);
   const totalIncome = state.transactions.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const fundBalance = totalContrib + totalIncome - totalExpense;
+  const fundBalance = totalContrib - totalExpense;
 
   document.getElementById('statContrib').textContent = fmtMoney(totalContrib);
   document.getElementById('statContribExpense').textContent = fmtMoney(totalExpense);
@@ -425,7 +425,7 @@ function renderDashboard() {
   monthEl.className = 'card-value ' + (monthNet >= 0 ? 'pos' : 'neg');
 
   const totalContrib = state.contributions.reduce((s,c)=>s+c.amount,0);
-  const fundBalance = totalContrib + totalIncome - totalExpense;
+  const fundBalance = totalContrib - totalExpense;
   const fundEl = document.getElementById('statFundBalanceDash');
   fundEl.textContent = fmtMoney(fundBalance);
   fundEl.className = 'card-value ' + (fundBalance >= 0 ? 'pos' : 'neg');
