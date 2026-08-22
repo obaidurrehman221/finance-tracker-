@@ -1324,6 +1324,9 @@ textarea:focus-visible {
 </head>
 <body>
 
+</head>
+<body>
+
 
 </head>
 <body>
@@ -1438,7 +1441,18 @@ textarea:focus-visible {
 
 window.cloud = { ready:false, user:null };
 
-(function initFirebase() {
+function tryInitFirebase(attempts) {
+  if(typeof firebase !== 'undefined') {
+    doFirebaseInit();
+  } else if(attempts < 50) {
+    setTimeout(() => tryInitFirebase(attempts + 1), 200);
+  } else {
+    console.error('Firebase SDK never loaded after 10s');
+    window.dispatchEvent(new CustomEvent('cloud-config-missing'));
+  }
+}
+
+function doFirebaseInit() {
   const FIREBASE_CONFIG = {
     apiKey: "AIzaSyDVm3dfmmewgq4Sw8z6k6ugSEmxTiiYJkM",
     authDomain: "finance-tracker-221.firebaseapp.com",
@@ -1449,14 +1463,7 @@ window.cloud = { ready:false, user:null };
   };
 
   const CONFIG_IS_SET = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY" && FIREBASE_CONFIG.apiKey !== "";
-
   if(!CONFIG_IS_SET) {
-    window.dispatchEvent(new CustomEvent('cloud-config-missing'));
-    return;
-  }
-
-  if(typeof firebase === 'undefined') {
-    console.error('Firebase SDK not loaded');
     window.dispatchEvent(new CustomEvent('cloud-config-missing'));
     return;
   }
@@ -1493,7 +1500,10 @@ window.cloud = { ready:false, user:null };
     console.error('Firebase init failed:', err);
     window.dispatchEvent(new CustomEvent('cloud-config-missing'));
   }
-})();
+}
+
+// Start checking for Firebase SDK
+tryInitFirebase(0);
 
 </script>
 
