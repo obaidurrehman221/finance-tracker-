@@ -7,6 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
 /* ===========================================================
    Avocado DevOps — Finance Tracker  |  SaaS Redesign
@@ -1318,6 +1321,9 @@ textarea:focus-visible {
 </head>
 <body>
 
+</head>
+<body>
+
 
 </head>
 <body>
@@ -1429,13 +1435,10 @@ textarea:focus-visible {
 <div class="toast" id="toast"></div>
 
 <script>
-/* ===========================================================
-   FIREBASE INIT — loaded via compat SDK (no module scope issues)
-   =========================================================== */
 
 window.cloud = { ready:false, user:null };
 
-function initFirebase() {
+(function initFirebase() {
   const FIREBASE_CONFIG = {
     apiKey: "AIzaSyDVm3dfmmewgq4Sw8z6k6ugSEmxTiiYJkM",
     authDomain: "finance-tracker-221.firebaseapp.com",
@@ -1452,23 +1455,13 @@ function initFirebase() {
     return;
   }
 
-  // Load Firebase via script tags
-  function loadScript(src) {
-    return new Promise((resolve, reject) => {
-      if(document.querySelector('script[src="' + src + '"]')) { resolve(); return; }
-      const s = document.createElement('script');
-      s.src = src;
-      s.onload = resolve;
-      s.onerror = reject;
-      document.head.appendChild(s);
-    });
+  if(typeof firebase === 'undefined') {
+    console.error('Firebase SDK not loaded');
+    window.dispatchEvent(new CustomEvent('cloud-config-missing'));
+    return;
   }
 
-  Promise.all([
-    loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"),
-    loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"),
-    loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"),
-  ]).then(() => {
+  try {
     const app = firebase.initializeApp(FIREBASE_CONFIG);
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -1496,21 +1489,15 @@ function initFirebase() {
       window.cloud.ready = true;
       window.dispatchEvent(new CustomEvent('cloud-auth-changed', { detail: { user } }));
     });
-  }).catch((err) => {
-    console.error('Firebase failed to load', err);
+  } catch(err) {
+    console.error('Firebase init failed:', err);
     window.dispatchEvent(new CustomEvent('cloud-config-missing'));
-  });
-}
-
-// Start Firebase init
-initFirebase();
+  }
+})();
 
 </script>
 
 <script>
-/* ===========================================================
-   APP LOGIC
-   =========================================================== */
 /* ---------------------------------------------------------
    DEFAULT DATA
 --------------------------------------------------------- */
