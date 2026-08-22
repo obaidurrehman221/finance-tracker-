@@ -950,6 +950,60 @@ input:focus, select:focus, textarea:focus {
   justify-content: center;
   z-index: 500;
 }
+
+/* Animated gradient background for login */
+#loginScreen {
+  background: linear-gradient(-45deg, #0b0f1a, #0d2818, #0f172a, #1a0a2e, #0b0f1a);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+  overflow: hidden;
+}
+#loginScreen::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+  top: -200px; right: -200px;
+  border-radius: 50%;
+  animation: orbFloat1 8s ease-in-out infinite;
+}
+#loginScreen::after {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%);
+  bottom: -150px; left: -150px;
+  border-radius: 50%;
+  animation: orbFloat2 10s ease-in-out infinite;
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(60px, 40px) scale(1.1); }
+  66%      { transform: translate(-30px, 80px) scale(0.95); }
+}
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-50px, -40px) scale(1.15); }
+  66%      { transform: translate(40px, -60px) scale(0.9); }
+}
+
+[data-theme="light"] #loginScreen {
+  background: linear-gradient(-45deg, #f0fdf4, #eff6ff, #fefce8, #fdf2f8, #f0fdf4);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+}
+[data-theme="light"] #loginScreen::before {
+  background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+}
+[data-theme="light"] #loginScreen::after {
+  background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+}
+
 #loadingOverlay { flex-direction: column; gap: 14px; }
 #loadingOverlay .brand {
   font-family: 'Fraunces', serif;
@@ -970,42 +1024,124 @@ input:focus, select:focus, textarea:focus {
 /* Login card */
 .login-card {
   width: 100%;
-  max-width: 400px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  border-radius: 18px;
-  padding: 40px 36px;
-  animation: loginFloat 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: var(--shadow-lg);
+  max-width: 420px;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 24px;
+  padding: 44px 40px;
+  animation: loginCardIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both,
+             loginCardFloat 6s ease-in-out 0.8s infinite;
+  box-shadow: 0 8px 60px rgba(0, 0, 0, 0.4),
+              0 0 0 1px rgba(148, 163, 184, 0.05),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  z-index: 1;
 }
-@keyframes loginFloat {
-  from { opacity: 0; transform: translateY(24px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+[data-theme="light"] .login-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 60px rgba(0, 0, 0, 0.1),
+              0 0 0 1px rgba(0, 0, 0, 0.03),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+@keyframes loginCardIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.92); filter: blur(4px); }
+  60%  { filter: blur(0); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes loginCardFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
 }
 .login-card h2 {
   font-family: 'Fraunces', serif;
   font-weight: 700;
-  font-size: 26px;
+  font-size: 28px;
   margin-bottom: 4px;
+  background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 .login-card .login-sub {
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--text-secondary);
-  margin-bottom: 28px;
+  margin-bottom: 32px;
+  line-height: 1.5;
 }
+
+/* Animated input focus */
+.login-card .field input {
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+}
+.login-card .field input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-soft),
+              0 0 20px rgba(16, 185, 129, 0.15);
+  background: var(--surface-hover);
+}
+
 #loginError {
   color: var(--danger);
   font-size: 13px;
   margin-bottom: 12px;
   display: none;
+  animation: errorShake 0.4s ease;
 }
-.login-card .btn-primary { width: 100%; justify-content: center; }
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(8px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
+}
+
+/* 3D Button hover with glow pulse */
+.login-card .btn-primary {
+  width: 100%;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  font-size: 15px;
+  padding: 14px 24px;
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.login-card .btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, var(--primary), var(--accent), var(--primary));
+  background-size: 200% 200%;
+  border-radius: 14px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s;
+  animation: btnGradient 3s ease infinite;
+}
+.login-card .btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4),
+              0 0 60px rgba(16, 185, 129, 0.15),
+              0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.login-card .btn-primary:hover::before { opacity: 1; }
+.login-card .btn-primary:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+@keyframes btnGradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .login-card .login-help {
   font-size: 12px;
   color: var(--text-muted);
-  margin-top: 20px;
+  margin-top: 24px;
   line-height: 1.6;
 }
 
