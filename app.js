@@ -334,7 +334,10 @@ function renderPartners() {
   const totalExpense = state.transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const totalContrib = state.contributions.reduce((s,c)=>s+c.amount,0);
   const totalIncome = state.transactions.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const fundBalance = totalContrib + totalIncome - totalExpense;
+  const netProfit = totalIncome - totalExpense;
+  const partnerCount = state.partners.length || 4;
+  const equalShare = netProfit / partnerCount;
+  const fundBalance = totalContrib - totalExpense;
 
   document.getElementById('statContrib').textContent = fmtMoney(totalContrib);
   document.getElementById('statContribExpense').textContent = fmtMoney(totalExpense);
@@ -349,12 +352,13 @@ function renderPartners() {
     const total = state.contributions.filter(c=>c.partnerId===p.id).reduce((s,c)=>s+c.amount,0);
     const share = totalContrib > 0 ? (total/totalContrib*100) : 0;
     const count = state.contributions.filter(c=>c.partnerId===p.id).length;
-    const stake = p.stake || 25;
+    const stake = p.stake || (100/partnerCount);
     const fairShare = totalExpense * (stake/100);
-    const diff = total - fairShare;
-    const diffLabel = diff >= 0
-      ? `<span style="color:var(--positive); font-weight:600;">+${fmtMoney(diff)} ahead of ${stake}% share</span>`
-      : `<span style="color:var(--negative); font-weight:600;">-${fmtMoney(Math.abs(diff))} behind ${stake}% share</span>`;
+    const unpaid = Math.max(0, fairShare - total);
+    const profitAfterDeduction = equalShare - unpaid;
+    const diffLabel = unpaid > 0
+      ? `<span style="color:var(--negative); font-weight:600;">-${fmtMoney(unpaid)} unpaid · net profit: ${fmtMoney(profitAfterDeduction)}</span>`
+      : `<span style="color:var(--positive); font-weight:600;">+${fmtMoney(total - fairShare)} ahead · net profit: ${fmtMoney(profitAfterDeduction)}</span>`;
     const card = document.createElement('div');
     card.className = 'partner-card';
     card.innerHTML = `
@@ -425,7 +429,7 @@ function renderDashboard() {
   monthEl.className = 'card-value ' + (monthNet >= 0 ? 'pos' : 'neg');
 
   const totalContrib = state.contributions.reduce((s,c)=>s+c.amount,0);
-  const fundBalance = totalContrib + totalIncome - totalExpense;
+  const fundBalance = totalContrib - totalExpense;
   const fundEl = document.getElementById('statFundBalanceDash');
   fundEl.textContent = fmtMoney(fundBalance);
   fundEl.className = 'card-value ' + (fundBalance >= 0 ? 'pos' : 'neg');
