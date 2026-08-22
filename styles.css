@@ -957,6 +957,8 @@ input:focus, select:focus, textarea:focus {
   background-size: 400% 400%;
   animation: gradientShift 12s ease infinite;
   overflow: hidden;
+  align-items: center;
+  justify-content: center;
 }
 #loginScreen::before {
   content: '';

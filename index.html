@@ -970,6 +970,8 @@ input:focus, select:focus, textarea:focus {
   background-size: 400% 400%;
   animation: gradientShift 12s ease infinite;
   overflow: hidden;
+  align-items: center;
+  justify-content: center;
 }
 #loginScreen::before {
   content: '';
@@ -1330,6 +1332,9 @@ textarea:focus-visible {
 </head>
 <body>
 
+</head>
+<body>
+
 
 </head>
 <body>
@@ -1351,7 +1356,7 @@ textarea:focus-visible {
 <div id="loginScreen" class="screen-overlay" style="display:none; padding:24px;">
   <div class="login-card">
     <h2>Avocado DevOps</h2>
-    <div class="login-sub">Sign in — access is limited to the four partners.</div>
+    <div class="login-sub">Sign in — access is limited</div>
     <div class="field"><label for="loginEmail">Email</label><input type="email" id="loginEmail" placeholder="you@avocadodevops.com" autocomplete="username"></div>
     <div class="field"><label for="loginPassword">Password</label><input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"></div>
     <div id="loginError"></div>
