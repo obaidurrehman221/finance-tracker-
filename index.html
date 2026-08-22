@@ -786,16 +786,16 @@
    → "Your apps" → Web app → SDK setup and configuration.
    =========================================================== */
 const FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDVm3dfmmewgq4Sw8z6k6ugSEmxTiiYJkM",
+  authDomain: "finance-tracker-221.firebaseapp.com",
+  projectId: "finance-tracker-221",
+  storageBucket: "finance-tracker-221.firebasestorage.app",
+  messagingSenderId: "34639474869",
+  appId: "1:34639474869:web:afceb1d3cea9efcae54efc"
 };
 /* =========================================================== */
 
-const CONFIG_IS_SET = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY";
+const CONFIG_IS_SET = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY" && FIREBASE_CONFIG.apiKey !== "";
 window.cloud = { ready:false, user:null };
 
 if(!CONFIG_IS_SET){
