@@ -1173,16 +1173,13 @@ textarea:focus-visible {
 </head>
 <body>
 
-<!-- Skip link (accessibility) -->
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<!-- LOADING -->
 <div id="loadingOverlay" class="screen-overlay" style="flex-direction:column; gap:14px;">
   <div style="font-family:'Fraunces',serif; font-weight:700; font-size:24px; color:var(--primary);">Avocado DevOps</div>
   <div class="loading-text">Loading your ledger…</div>
 </div>
 
-<!-- SETUP REQUIRED -->
 <div id="setupRequired" class="screen-overlay" style="display:none; padding:24px;">
   <div class="setup-card">
     <h2>One-time setup needed</h2>
@@ -1190,26 +1187,18 @@ textarea:focus-visible {
   </div>
 </div>
 
-<!-- LOGIN -->
 <div id="loginScreen" class="screen-overlay" style="display:none; padding:24px;">
   <div class="login-card">
     <h2>Avocado DevOps</h2>
     <div class="login-sub">Sign in — access is limited to the four partners.</div>
-    <div class="field">
-      <label for="loginEmail">Email</label>
-      <input type="email" id="loginEmail" placeholder="you@avocadodevops.com" autocomplete="username">
-    </div>
-    <div class="field">
-      <label for="loginPassword">Password</label>
-      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
-    </div>
+    <div class="field"><label for="loginEmail">Email</label><input type="email" id="loginEmail" placeholder="you@avocadodevops.com" autocomplete="username"></div>
+    <div class="field"><label for="loginPassword">Password</label><input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"></div>
     <div id="loginError"></div>
     <button class="btn btn-primary" onclick="handleLogin()">Sign in</button>
     <p class="login-help">No account? Ask whoever set up this workspace to add your email in the Firebase console.</p>
   </div>
 </div>
 
-<!-- APP -->
 <div class="app" id="appRoot" style="display:none;">
   <aside class="sidebar">
     <div class="brand"><span>Avocado DevOps</span><span class="mark">Rs</span></div>
@@ -1230,7 +1219,6 @@ textarea:focus-visible {
       <button class="signout-btn" onclick="handleLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</button>
     </div>
   </aside>
-
   <main id="main-content">
     <section class="page active" id="page-dashboard">
       <header class="page-head"><div><h1>Dashboard</h1><div class="subtitle">Every dollar in, every dollar out — at a glance.</div></div><button class="btn btn-primary" onclick="openDrawer()">+ Add transaction</button></header>
@@ -1239,59 +1227,42 @@ textarea:focus-visible {
         <div class="card negative"><div class="card-label">Total expenses</div><div class="card-value neg" id="statExpense">Rs 0.00</div><div class="card-sub">All time</div></div>
         <div class="card"><div class="card-label">Net profit</div><div class="card-value" id="statNet">Rs 0.00</div><div class="card-sub">All time</div></div>
         <div class="card"><div class="card-label">This month</div><div class="card-value" id="statMonth">Rs 0.00</div><div class="card-sub">Net, current month</div></div>
-        <div class="card"><div class="card-label">Fund balance</div><div class="card-value" id="statFundBalanceDash">Rs 0.00</div><div class="card-sub"><a href="#" class="plain" onclick="switchPage('partners'); return false;">Partner contributions</a> minus expenses</div></div>
+        <div class="card"><div class="card-label">Fund balance</div><div class="card-value" id="statFundBalanceDash">Rs 0.00</div><div class="card-sub"><a href="#" class="plain" onclick="switchPage(\'partners\'); return false;">Partner contributions</a> minus expenses</div></div>
       </div>
       <div class="two-col">
         <div class="panel"><h3 class="panel-title">Income vs. expenses — last 6 months</h3><div class="chart-box"><canvas id="trendChart"></canvas></div></div>
         <div class="panel"><h3 class="panel-title">Top expense categories</h3><div id="topExpenseList"></div></div>
       </div>
       <div class="panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;"><h3 class="panel-title" style="margin:0;">Recent activity</h3><button class="btn btn-ghost" style="padding:8px 16px; font-size:13px;" onclick="switchPage('transactions')">View all</button></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;"><h3 class="panel-title" style="margin:0;">Recent activity</h3><button class="btn btn-ghost" style="padding:8px 16px; font-size:13px;" onclick="switchPage(\'transactions\')">View all</button></div>
         <table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="amt-col">Amount</th></tr></thead><tbody id="recentTxBody"></tbody></table>
         <div class="empty-state" id="recentEmpty" style="display:none;"><div class="glyph">§</div><p>No transactions yet. Add your first entry to start the ledger.</p></div>
       </div>
     </section>
-
     <section class="page" id="page-transactions">
       <header class="page-head"><div><h1>Transactions</h1><div class="subtitle">The full ledger — every entry, searchable and sortable.</div></div><div style="display:flex; gap:10px;"><button class="btn btn-ghost" onclick="exportCSV()">Export CSV</button><button class="btn btn-primary" onclick="openDrawer()">+ Add transaction</button></div></header>
-      <div class="filters">
-        <input class="search" type="text" id="searchInput" placeholder="Search description or vendor / client…" oninput="renderTransactions()">
-        <select id="filterType" onchange="renderTransactions()"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expense</option></select>
-        <select id="filterCategory" onchange="renderTransactions()"><option value="all">All categories</option></select>
-        <select id="sortOrder" onchange="renderTransactions()"><option value="date-desc">Newest first</option><option value="date-asc">Oldest first</option><option value="amount-desc">Highest amount</option><option value="amount-asc">Lowest amount</option></select>
-      </div>
+      <div class="filters"><input class="search" type="text" id="searchInput" placeholder="Search description or vendor / client…" oninput="renderTransactions()"><select id="filterType" onchange="renderTransactions()"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expense</option></select><select id="filterCategory" onchange="renderTransactions()"><option value="all">All categories</option></select><select id="sortOrder" onchange="renderTransactions()"><option value="date-desc">Newest first</option><option value="date-asc">Oldest first</option><option value="amount-desc">Highest amount</option><option value="amount-asc">Lowest amount</option></select></div>
       <div class="panel" style="padding:0; overflow-x:auto;"><table style="min-width:640px;"><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Method</th><th>Client / Vendor</th><th class="amt-col">Amount</th><th></th></tr></thead><tbody id="txBody"></tbody></table><div class="empty-state" id="txEmpty" style="display:none;"><div class="glyph">§</div><p>No matching transactions.</p></div></div>
     </section>
-
     <section class="page" id="page-categories">
       <header class="page-head"><div><h1>Categories</h1><div class="subtitle">Organize income and expenses.</div></div><button class="btn btn-primary" onclick="openCategoryDrawer()">+ Add category</button></header>
       <div class="panel"><h3 class="panel-title">Income categories</h3><div class="cat-grid" id="incomeCatGrid"></div></div>
       <div class="panel"><h3 class="panel-title">Expense categories</h3><div class="cat-grid" id="expenseCatGrid"></div></div>
     </section>
-
     <section class="page" id="page-partners">
       <header class="page-head"><div><h1>Partners</h1><div class="subtitle">What each person has put into the business.</div></div><button class="btn btn-primary" onclick="openContribDrawer()">+ Add contribution</button></header>
-      <div class="fund-summary">
-        <div class="card"><div class="card-label">Total contributed</div><div class="card-value pos" id="statContrib">Rs 0.00</div><div class="card-sub">From all partners</div></div>
-        <div class="card negative"><div class="card-label">Total expenses</div><div class="card-value neg" id="statContribExpense">Rs 0.00</div><div class="card-sub">Drawn from the fund</div></div>
-        <div class="card"><div class="card-label">Fund balance</div><div class="card-value" id="statFundBalance">Rs 0.00</div><div class="card-sub">Available to spend</div></div>
-      </div>
+      <div class="fund-summary"><div class="card"><div class="card-label">Total contributed</div><div class="card-value pos" id="statContrib">Rs 0.00</div><div class="card-sub">From all partners</div></div><div class="card negative"><div class="card-label">Total expenses</div><div class="card-value neg" id="statContribExpense">Rs 0.00</div><div class="card-sub">Drawn from the fund</div></div><div class="card"><div class="card-label">Fund balance</div><div class="card-value" id="statFundBalance">Rs 0.00</div><div class="card-sub">Available to spend</div></div></div>
       <div class="partner-grid" id="partnerGrid"></div>
       <div class="panel" style="padding:0; overflow-x:auto;"><div style="padding:24px 26px 8px;"><h3 class="panel-title" style="margin:0;">Contribution history</h3></div><table style="min-width:520px;"><thead><tr><th>Date</th><th>Partner</th><th>Note</th><th class="amt-col">Amount</th><th></th></tr></thead><tbody id="contribBody"></tbody></table><div class="empty-state" id="contribEmpty" style="display:none;"><div class="glyph">§</div><p>No contributions logged yet.</p></div></div>
     </section>
-
     <section class="page" id="page-reports">
       <header class="page-head"><div><h1>Reports</h1><div class="subtitle">Roll up the numbers by month and category.</div></div><select id="reportRange" onchange="renderReports()"><option value="6">Last 6 months</option><option value="12">Last 12 months</option><option value="all">All time</option></select></header>
-      <div class="two-col">
-        <div class="panel"><h3 class="panel-title">Monthly net profit</h3><div class="chart-box"><canvas id="reportChart"></canvas></div></div>
-        <div class="panel"><h3 class="panel-title">Expense breakdown</h3><div class="chart-box"><canvas id="pieChart"></canvas></div></div>
-      </div>
+      <div class="two-col"><div class="panel"><h3 class="panel-title">Monthly net profit</h3><div class="chart-box"><canvas id="reportChart"></canvas></div></div><div class="panel"><h3 class="panel-title">Expense breakdown</h3><div class="chart-box"><canvas id="pieChart"></canvas></div></div></div>
       <div class="panel"><h3 class="panel-title">Monthly summary</h3><table><thead><tr><th>Month</th><th class="amt-col">Income</th><th class="amt-col">Expenses</th><th class="amt-col">Net</th></tr></thead><tbody id="monthlySummaryBody"></tbody></table></div>
     </section>
   </main>
 </div>
 
-<!-- MOBILE BOTTOM NAV -->
 <nav class="mobile-nav"><div class="mobile-nav-inner">
   <button class="mobile-nav-btn active" data-page="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Home</button>
   <button class="mobile-nav-btn" data-page="transactions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Ledger</button>
@@ -1300,10 +1271,9 @@ textarea:focus-visible {
   <button class="mobile-nav-btn" data-page="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 3 5-8"/></svg>Reports</button>
 </div></nav>
 
-<!-- DRAWERS -->
-<div class="overlay" id="txOverlay" onclick="if(event.target===this) closeDrawer()"><div class="drawer"><div class="drawer-head"><h2 id="drawerTitle">Add transaction</h2><button class="close-x" onclick="closeDrawer()">✕</button></div><div class="field"><label>Type</label><div class="type-toggle"><button type="button" id="typeIncomeBtn" class="active income" onclick="setTxType('income')">Income</button><button type="button" id="typeExpenseBtn" class="expense" onclick="setTxType('expense')">Expense</button></div></div><div class="field"><label>Amount</label><input type="number" id="txAmount" step="0.01" min="0" placeholder="0.00"></div><div class="field"><label>Date</label><input type="date" id="txDate"></div><div class="field"><label>Category</label><select id="txCategory"></select></div><div class="field"><label>Description</label><input type="text" id="txDescription" placeholder="e.g. Invoice #204, office supplies…"></div><div class="field"><label>Client / Vendor</label><input type="text" id="txParty" placeholder="Optional"></div><div class="field"><label>Payment method</label><select id="txMethod"><option>Bank transfer</option><option>Credit card</option><option>Debit card</option><option>Cash</option><option>Check</option><option>Other</option></select></div><div class="field"><label>Notes</label><textarea id="txNotes" placeholder="Optional"></textarea></div><input type="hidden" id="txId"><div class="drawer-actions"><button class="btn btn-ghost" onclick="closeDrawer()">Cancel</button><button class="btn btn-primary" onclick="saveTransaction()">Save entry</button></div></div></div>
+<div class="overlay" id="txOverlay" onclick="if(event.target===this) closeDrawer()"><div class="drawer"><div class="drawer-head"><h2 id="drawerTitle">Add transaction</h2><button class="close-x" onclick="closeDrawer()">✕</button></div><div class="field"><label>Type</label><div class="type-toggle"><button type="button" id="typeIncomeBtn" class="active income" onclick="setTxType(\'income\')">Income</button><button type="button" id="typeExpenseBtn" class="expense" onclick="setTxType(\'expense\')">Expense</button></div></div><div class="field"><label>Amount</label><input type="number" id="txAmount" step="0.01" min="0" placeholder="0.00"></div><div class="field"><label>Date</label><input type="date" id="txDate"></div><div class="field"><label>Category</label><select id="txCategory"></select></div><div class="field"><label>Description</label><input type="text" id="txDescription" placeholder="e.g. Invoice #204, office supplies…"></div><div class="field"><label>Client / Vendor</label><input type="text" id="txParty" placeholder="Optional"></div><div class="field"><label>Payment method</label><select id="txMethod"><option>Bank transfer</option><option>Credit card</option><option>Debit card</option><option>Cash</option><option>Check</option><option>Other</option></select></div><div class="field"><label>Notes</label><textarea id="txNotes" placeholder="Optional"></textarea></div><input type="hidden" id="txId"><div class="drawer-actions"><button class="btn btn-ghost" onclick="closeDrawer()">Cancel</button><button class="btn btn-primary" onclick="saveTransaction()">Save entry</button></div></div></div>
 
-<div class="overlay" id="catOverlay" onclick="if(event.target===this) closeCategoryDrawer()"><div class="drawer" style="width:380px;"><div class="drawer-head"><h2>Add category</h2><button class="close-x" onclick="closeCategoryDrawer()">✕</button></div><div class="field"><label>Applies to</label><div class="type-toggle"><button type="button" id="catTypeIncomeBtn" class="active income" onclick="setCatType('income')">Income</button><button type="button" id="catTypeExpenseBtn" class="expense" onclick="setCatType('expense')">Expense</button></div></div><div class="field"><label>Name</label><input type="text" id="catName" placeholder="e.g. Software subscriptions"></div><div class="field"><label>Color</label><input type="color" id="catColor" value="#10b981" style="height:46px; padding:4px; border-radius:10px;"></div><div class="drawer-actions"><button class="btn btn-ghost" onclick="closeCategoryDrawer()">Cancel</button><button class="btn btn-primary" onclick="saveCategory()">Add category</button></div></div></div>
+<div class="overlay" id="catOverlay" onclick="if(event.target===this) closeCategoryDrawer()"><div class="drawer" style="width:380px;"><div class="drawer-head"><h2>Add category</h2><button class="close-x" onclick="closeCategoryDrawer()">✕</button></div><div class="field"><label>Applies to</label><div class="type-toggle"><button type="button" id="catTypeIncomeBtn" class="active income" onclick="setCatType(\'income\')">Income</button><button type="button" id="catTypeExpenseBtn" class="expense" onclick="setCatType(\'expense\')">Expense</button></div></div><div class="field"><label>Name</label><input type="text" id="catName" placeholder="e.g. Software subscriptions"></div><div class="field"><label>Color</label><input type="color" id="catColor" value="#10b981" style="height:46px; padding:4px; border-radius:10px;"></div><div class="drawer-actions"><button class="btn btn-ghost" onclick="closeCategoryDrawer()">Cancel</button><button class="btn btn-primary" onclick="saveCategory()">Add category</button></div></div></div>
 
 <div class="overlay" id="contribOverlay" onclick="if(event.target===this) closeContribDrawer()"><div class="drawer" style="width:400px;"><div class="drawer-head"><h2>Add contribution</h2><button class="close-x" onclick="closeContribDrawer()">✕</button></div><div class="field"><label>Partner</label><select id="contribPartner"></select></div><div class="field"><label>Amount</label><input type="number" id="contribAmount" step="0.01" min="0" placeholder="0.00"></div><div class="field"><label>Date</label><input type="date" id="contribDate"></div><div class="field"><label>Note</label><input type="text" id="contribNote" placeholder="Optional"></div><div class="drawer-actions"><button class="btn btn-ghost" onclick="closeContribDrawer()">Cancel</button><button class="btn btn-primary" onclick="saveContribution()">Save contribution</button></div></div></div>
 
@@ -1325,43 +1295,38 @@ window.cloud = { ready:false, user:null };
 if(!CONFIG_IS_SET) {
   window.dispatchEvent(new CustomEvent('cloud-config-missing'));
 } else {
-  import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js").then(async ({ initializeApp }) => {
-    const [{ getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut }, { getFirestore, doc, getDoc, setDoc, onSnapshot }] = await Promise.all([
-      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
-      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"),
-    ]);
+  const [{ getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut }, { getFirestore, doc, getDoc, setDoc, onSnapshot }] = await Promise.all([
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"),
+  ]);
+  const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
 
-    const app = initializeApp(FIREBASE_CONFIG);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const DOC_REF = doc(db, 'avocado-devops', 'shared-ledger');
+  const app = initializeApp(FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const DOC_REF = doc(db, 'avocado-devops', 'shared-ledger');
 
-    window.cloud.login = async (email, password) => {
-      await signInWithEmailAndPassword(auth, email, password);
-    };
-    window.cloud.logout = async () => { await signOut(auth); };
-
-    window.cloud.load = async () => {
-      const snap = await getDoc(DOC_REF);
-      return snap.exists() ? snap.data().json : null;
-    };
-    window.cloud.save = async (stateObj) => {
-      await setDoc(DOC_REF, { json: JSON.stringify(stateObj), updatedAt: Date.now() });
-    };
-    window.cloud.subscribe = (callback) => {
-      onSnapshot(DOC_REF, (snap) => {
-        if(snap.exists()) callback(snap.data().json);
-      });
-    };
-
-    onAuthStateChanged(auth, (user) => {
-      window.cloud.user = user;
-      window.cloud.ready = true;
-      window.dispatchEvent(new CustomEvent('cloud-auth-changed', { detail: { user } }));
+  window.cloud.login = async (email, password) => {
+    await signInWithEmailAndPassword(auth, email, password);
+  };
+  window.cloud.logout = async () => { await signOut(auth); };
+  window.cloud.load = async () => {
+    const snap = await getDoc(DOC_REF);
+    return snap.exists() ? snap.data().json : null;
+  };
+  window.cloud.save = async (stateObj) => {
+    await setDoc(DOC_REF, { json: JSON.stringify(stateObj), updatedAt: Date.now() });
+  };
+  window.cloud.subscribe = (callback) => {
+    onSnapshot(DOC_REF, (snap) => {
+      if(snap.exists()) callback(snap.data().json);
     });
-  }).catch((err) => {
-    console.error('Firebase failed to load', err);
-    window.dispatchEvent(new CustomEvent('cloud-config-missing'));
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    window.cloud.user = user;
+    window.cloud.ready = true;
+    window.dispatchEvent(new CustomEvent('cloud-auth-changed', { detail: { user } }));
   });
 }
 </script>
