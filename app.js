@@ -807,3 +807,29 @@ document.getElementById('loginEmail').addEventListener('keydown', (e)=>{ if(e.ke
 
 // Initialize theme on load
 initTheme();
+
+/* ---------------------------------------------------------
+   EXPOSE TO WINDOW — required for onclick handlers in module scope
+--------------------------------------------------------- */
+window.handleLogin = handleLogin;
+window.handleLogout = handleLogout;
+window.toggleTheme = toggleTheme;
+window.switchPage = switchPage;
+window.openDrawer = openDrawer;
+window.closeDrawer = closeDrawer;
+window.saveTransaction = saveTransaction;
+window.setTxType = setTxType;
+window.openCategoryDrawer = openCategoryDrawer;
+window.closeCategoryDrawer = closeCategoryDrawer;
+window.setCatType = setCatType;
+window.saveCategory = saveCategory;
+window.openContribDrawer = openContribDrawer;
+window.closeContribDrawer = closeContribDrawer;
+window.saveContribution = saveContribution;
+window.deleteTransaction = deleteTransaction;
+window.deleteCategory = deleteCategory;
+window.deleteContribution = deleteContribution;
+window.updatePartnerName = updatePartnerName;
+window.renderTransactions = renderTransactions;
+window.renderReports = renderReports;
+window.exportCSV = exportCSV;
