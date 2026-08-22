@@ -1315,6 +1315,9 @@ textarea:focus-visible {
 </head>
 <body>
 
+</head>
+<body>
+
 
 </head>
 <body>
@@ -1425,65 +1428,86 @@ textarea:focus-visible {
 
 <div class="toast" id="toast"></div>
 
-<script type="module">
+<script>
 /* ===========================================================
-   FIREBASE INIT — wrapped in try/catch so app logic always runs
+   FIREBASE INIT — loaded via compat SDK (no module scope issues)
    =========================================================== */
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDVm3dfmmewgq4Sw8z6k6ugSEmxTiiYJkM",
-  authDomain: "finance-tracker-221.firebaseapp.com",
-  projectId: "finance-tracker-221",
-  storageBucket: "finance-tracker-221.firebasestorage.app",
-  messagingSenderId: "34639474869",
-  appId: "1:34639474869:web:afceb1d3cea9efcae54efc"
-};
 
-const CONFIG_IS_SET = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY" && FIREBASE_CONFIG.apiKey !== "";
 window.cloud = { ready:false, user:null };
 
-try {
-  if(CONFIG_IS_SET) {
-    const [authModule, firestoreModule, appModule] = await Promise.all([
-      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
-      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"),
-      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
-    ]);
+function initFirebase() {
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyDVm3dfmmewgq4Sw8z6k6ugSEmxTiiYJkM",
+    authDomain: "finance-tracker-221.firebaseapp.com",
+    projectId: "finance-tracker-221",
+    storageBucket: "finance-tracker-221.firebasestorage.app",
+    messagingSenderId: "34639474869",
+    appId: "1:34639474869:web:afceb1d3cea9efcae54efc"
+  };
 
-    const app = appModule.initializeApp(FIREBASE_CONFIG);
-    const auth = authModule.getAuth(app);
-    const db = firestoreModule.getFirestore(app);
-    const DOC_REF = firestoreModule.doc(db, 'avocado-devops', 'shared-ledger');
+  const CONFIG_IS_SET = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY" && FIREBASE_CONFIG.apiKey !== "";
+
+  if(!CONFIG_IS_SET) {
+    window.dispatchEvent(new CustomEvent('cloud-config-missing'));
+    return;
+  }
+
+  // Load Firebase via script tags
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      if(document.querySelector('script[src="' + src + '"]')) { resolve(); return; }
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  Promise.all([
+    loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"),
+    loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"),
+    loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"),
+  ]).then(() => {
+    const app = firebase.initializeApp(FIREBASE_CONFIG);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const DOC_REF = db.collection('avocado-devops').doc('shared-ledger');
 
     window.cloud.login = async (email, password) => {
-      await authModule.signInWithEmailAndPassword(auth, email, password);
+      await auth.signInWithEmailAndPassword(email, password);
     };
-    window.cloud.logout = async () => { await authModule.signOut(auth); };
+    window.cloud.logout = async () => { await auth.signOut(); };
     window.cloud.load = async () => {
-      const snap = await firestoreModule.getDoc(DOC_REF);
-      return snap.exists() ? snap.data().json : null;
+      const snap = await DOC_REF.get();
+      return snap.exists ? snap.data().json : null;
     };
     window.cloud.save = async (stateObj) => {
-      await firestoreModule.setDoc(DOC_REF, { json: JSON.stringify(stateObj), updatedAt: Date.now() });
+      await DOC_REF.set({ json: JSON.stringify(stateObj), updatedAt: Date.now() });
     };
     window.cloud.subscribe = (callback) => {
-      firestoreModule.onSnapshot(DOC_REF, (snap) => {
-        if(snap.exists()) callback(snap.data().json);
+      DOC_REF.onSnapshot((snap) => {
+        if(snap.exists) callback(snap.data().json);
       });
     };
 
-    authModule.onAuthStateChanged(auth, (user) => {
+    auth.onAuthStateChanged((user) => {
       window.cloud.user = user;
       window.cloud.ready = true;
       window.dispatchEvent(new CustomEvent('cloud-auth-changed', { detail: { user } }));
     });
-  } else {
+  }).catch((err) => {
+    console.error('Firebase failed to load', err);
     window.dispatchEvent(new CustomEvent('cloud-config-missing'));
-  }
-} catch(err) {
-  console.error('Firebase init failed:', err);
-  window.dispatchEvent(new CustomEvent('cloud-config-missing'));
+  });
 }
 
+// Start Firebase init
+initFirebase();
+
+</script>
+
+<script>
 /* ===========================================================
    APP LOGIC
    =========================================================== */
@@ -2315,7 +2339,6 @@ window.updatePartnerName = updatePartnerName;
 window.renderTransactions = renderTransactions;
 window.renderReports = renderReports;
 window.exportCSV = exportCSV;
-
 
 </script>
 
