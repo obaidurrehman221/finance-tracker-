@@ -819,7 +819,7 @@ document.addEventListener('visibilitychange', () => {
       if (window.cloud && window.cloud.ready && window.cloud.user) {
         handleLogout();
       }
-    }, 15000);
+    }, 28000);
   } else {
     // Tab became visible again — cancel the countdown
     if (autoLogoutTimer) {
