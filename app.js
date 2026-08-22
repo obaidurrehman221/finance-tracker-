@@ -809,6 +809,27 @@ document.getElementById('loginEmail').addEventListener('keydown', (e)=>{ if(e.ke
 initTheme();
 
 /* ---------------------------------------------------------
+   AUTO-LOGOUT: logout after 15 seconds of tab inactivity
+--------------------------------------------------------- */
+let autoLogoutTimer = null;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    // Tab went hidden — start 15s countdown
+    autoLogoutTimer = setTimeout(() => {
+      if (window.cloud && window.cloud.ready && window.cloud.user) {
+        handleLogout();
+      }
+    }, 15000);
+  } else {
+    // Tab became visible again — cancel the countdown
+    if (autoLogoutTimer) {
+      clearTimeout(autoLogoutTimer);
+      autoLogoutTimer = null;
+    }
+  }
+});
+
+/* ---------------------------------------------------------
    EXPOSE TO WINDOW — required for onclick handlers in module scope
 --------------------------------------------------------- */
 window.handleLogin = handleLogin;
